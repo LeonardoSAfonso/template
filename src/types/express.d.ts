@@ -3,6 +3,7 @@ declare namespace Express {
     user: {
       id: number;
       access_level: number;
+      storeId: number;
     };
   }
 }

@@ -21,9 +21,11 @@ export default function Auth(
   try {
     const decoded = verify(token, secret);
     const { sub } = decoded as TokenPayload;
+
     req.user = {
       id: Number(sub.split('/')[0]),
       access_level: Number(sub.split('/')[1]),
+      storeId: Number(sub.split('/')[2]),
     };
     next();
   } catch (err) {
