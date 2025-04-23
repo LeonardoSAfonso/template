@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import BCryptHashProvider from '../src/shared/providers/hashProvider/implementations/BCryptHashProvider';
+import HashProvider from '../src/shared/providers/Hash';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const hasProvider = new BCryptHashProvider();
+  const hasProvider = new HashProvider();
 
   const hashed = await hasProvider.generateHash(
     process.env.SYSTEM_PASSWORD || 'default',
@@ -16,6 +16,7 @@ async function main() {
       email: 'contato@gmail.com',
       password: hashed,
       access_level: 0,
+      storeId: 0,
     },
   });
 }
