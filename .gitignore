@@ -1,8 +1,5 @@
 node_modules
 dist
-yarn.lock
 .env
-package-lock.json
 tmp/uploads
-src/modules/client
-src/modules/user
+

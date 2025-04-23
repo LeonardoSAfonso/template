@@ -1,17 +1,15 @@
 import nodemailer, { Transporter } from 'nodemailer';
 
-import emailConfig from '../../../../config/Email';
+import emailConfig from '../../config/Email';
+import ISendMailDTO from './dtos/ISendMail';
+import MailTemplateProvider from './MailTemplate';
 
-import ISendMailDTO from '../dtos/ISendMailDTO';
-import IMailTemplateProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
-import IMailProvider from '../model/IMailProvider';
-
-export default class MailerProvider implements IMailProvider {
+export default class MailerProvider {
   private client: Transporter;
 
-  private mailTemplateProvider: IMailTemplateProvider;
+  private mailTemplateProvider: MailTemplateProvider;
 
-  constructor(mailTemplateProvider: IMailTemplateProvider) {
+  constructor(mailTemplateProvider: MailTemplateProvider) {
     this.mailTemplateProvider = mailTemplateProvider;
 
     const transporter = nodemailer.createTransport(emailConfig);

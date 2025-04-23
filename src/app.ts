@@ -2,7 +2,6 @@ import 'express-async-errors';
 import express, { NextFunction, Request, Response } from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import path from 'path';
 import { CelebrateError } from 'celebrate';
 
 import morgan from 'morgan';
@@ -10,7 +9,7 @@ import routes from './routes';
 
 import AppError from './shared/errors/AppError';
 import multer from './config/Multer';
-import morganConfig from './config/Morgan';
+import morganConfig from './config/Logger';
 
 const app = express();
 
@@ -31,8 +30,6 @@ app.use(cors(), (req, res, next) => {
 });
 
 app.use(express.static('src/public'));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'public/views'));
 
 app.use(routes);
 
@@ -47,10 +44,7 @@ app.use((err: Error, req: Request, res: Response, _: NextFunction) => {
   if (err instanceof CelebrateError) {
     return res.status(400).json({
       status: err.message,
-      // eslint-disable-next-line prettier/prettier
-      message: `ERRO: ${err.details.get(err.details.keys().next().value)?.details[0].message
-        // eslint-disable-next-line prettier/prettier
-        }`,
+      message: JSON.stringify(err.details, null, 2),
     });
   }
 

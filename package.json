@@ -1,7 +1,6 @@
 {
   "name": "template-api",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
@@ -16,20 +15,21 @@
   },
   "dependencies": {
     "@prisma/client": "^3.9.2",
-    "axios": "^0.21.1",
+    "axios": "^1.8.2",
     "bcryptjs": "^2.4.3",
     "celebrate": "^14.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "ejs": "^3.1.6",
     "eslint": "^7.21.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "jsonwebtoken": "^8.5.1",
+    "handlebars": "^4.7.8",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "multer": "^1.4.2",
-    "mysql2": "^2.2.5",
-    "nodemailer": "^6.6.3"
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.13.0",
+    "nodemailer": "^6.6.3",
+    "ts-transformer-keys": "^0.4.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.8",
@@ -56,10 +56,10 @@
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^7.0.0",
     "prettier": "^2.2.1",
     "prisma": "^3.9.2",
     "ts-node-dev": "^1.1.6",
-    "typescript": "^4.2.3",
-    "husky": "^7.0.0"
+    "typescript": "^4.2.3"
   }
 }

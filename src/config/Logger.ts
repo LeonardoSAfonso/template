@@ -4,7 +4,8 @@ import { Request } from 'express';
 export default function morganConfig(): void {
   morgan.token(
     'req-body',
-    (req: Request) => `Body: ${JSON.stringify(req.body)}`,
+    (req: Request) =>
+      `${JSON.stringify(req.body)}\nBody: ${JSON.stringify(req.body)}`,
   );
 
   morgan.token(
