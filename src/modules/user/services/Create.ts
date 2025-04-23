@@ -1,28 +1,31 @@
 import { User } from '@prisma/client';
 import path from 'path';
 import AppError from '../../../shared/errors/AppError';
-import IHashProvider from '../../../shared/providers/hashProvider/model/IHashProvider';
-import IMailProvider from '../../../shared/providers/MailProvider/model/IMailProvider';
-import ICreateUserDTO from '../dtos/ICreateUseDTO';
-import IUserRepository from '../repositories/IUserRepository';
+import { CreateDTO } from '../../../types/model.type';
+import UserRepository from '../infra/Repository';
+import HashProvider from '../../../shared/providers/Hash';
+import MailerProvider from '../../../shared/providers/Mailer';
+import SessionInfo from '../../../types/sessionInfo';
 
 export default class CreateUserService {
   constructor(
-    private userRepository: IUserRepository,
-    private hashProvider: IHashProvider,
-    private mailProvider: IMailProvider,
+    private repository: UserRepository,
+    private hashProvider: HashProvider,
+    private mailProvider: MailerProvider,
   ) {
-    this.userRepository = userRepository;
+    this.repository = repository;
     this.hashProvider = hashProvider;
     this.mailProvider = mailProvider;
   }
 
   public async execute(
-    { name, email, password, access_level }: ICreateUserDTO,
-    appName: string,
-    link: string,
+    userData: CreateDTO<User>,
+    session: SessionInfo,
   ): Promise<User> {
-    const checkUserEmailExist = await this.userRepository.findByEmail(email);
+    const checkUserEmailExist = await this.repository.findByEmail(
+      userData.email,
+      session.storeId,
+    );
 
     if (checkUserEmailExist) {
       throw new AppError(
@@ -33,24 +36,18 @@ export default class CreateUserService {
 
     let user: User;
 
-    if (password) {
-      const hashed = await this.hashProvider.generateHash(password);
+    if (userData.password) {
+      const hashed = await this.hashProvider.generateHash(userData.password);
 
-      user = await this.userRepository.create({
-        name,
-        email,
+      user = await this.repository.create({
+        ...userData,
         password: hashed,
-        access_level,
       });
     } else {
-      user = await this.userRepository.create({
-        name,
-        email,
-        access_level,
-      });
+      user = await this.repository.create(userData);
     }
 
-    if (access_level > 0) {
+    if (userData.access_level > 0) {
       const createPasswordTemplate = path.resolve(
         __dirname,
         '..',
@@ -61,14 +58,14 @@ export default class CreateUserService {
       await this.mailProvider
         .sendMail({
           to: {
-            name,
-            email,
+            name: user.name,
+            email: user.email,
           },
           subject: 'Confirmação de Cadastro',
           templateData: {
             variables: {
-              name,
-              link,
+              name: user.name,
+              link: '/panel/generate-pass',
             },
             file: createPasswordTemplate,
           },
