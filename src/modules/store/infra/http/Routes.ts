@@ -4,7 +4,6 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { keys } from 'ts-transformer-keys';
 import Admin from '../../../../shared/middleware/Admin';
 import StoreController from './Controller';
-import Auth from '../../../../shared/middleware/Auth';
 
 const storeRouter = Router();
 
@@ -45,7 +44,7 @@ storeRouter.get(
 );
 
 storeRouter.get(
-  '/store',
+  '/store/:id',
   celebrate({ [Segments.PARAMS]: { id: Joi.number().integer().required() } }),
   Admin,
   storeController.findOne,
@@ -61,7 +60,6 @@ storeRouter.post(
       details: Joi.string().required(),
     },
   }),
-  Auth,
   storeController.support,
 );
 

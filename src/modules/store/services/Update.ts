@@ -1,6 +1,6 @@
 import { Store } from '@prisma/client';
 import AppError from '../../../shared/errors/AppError';
-import StoreRepository from '../infra/StoreRepository';
+import StoreRepository from '../infra/Repository';
 import { UpdateDTO } from '../../../types/model.type';
 
 export default class UpdateStoreService {

@@ -7,7 +7,7 @@ import CreateStoreService from '../../services/Create';
 import DeleteStoreservice from '../../services/Delete';
 import FindOneStoreService from '../../services/FindOne';
 import UpdateStoreService from '../../services/Update';
-import StoreRepository from '../StoreRepository';
+import StoreRepository from '../Repository';
 import PaginationParams from '../../../../types/pagination.type';
 import FindStoresService from '../../services/Find';
 

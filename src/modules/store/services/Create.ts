@@ -1,7 +1,7 @@
 import { Store } from '@prisma/client';
 import AppError from '../../../shared/errors/AppError';
 import { CreateDTO } from '../../../types/model.type';
-import StoreRepository from '../infra/StoreRepository';
+import StoreRepository from '../infra/Repository';
 
 export default class CreateStoreService {
   constructor(private storeRepository: StoreRepository) {

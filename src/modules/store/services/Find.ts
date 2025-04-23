@@ -1,5 +1,5 @@
 import { Store } from '@prisma/client';
-import StoreRepository from '../infra/StoreRepository';
+import StoreRepository from '../infra/Repository';
 import PaginationParams from '../../../types/pagination.type';
 import getTotalPage from '../../../shared/utils/totalPage';
 
