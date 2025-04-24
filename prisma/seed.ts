@@ -16,7 +16,6 @@ async function main() {
       email: 'contato@gmail.com',
       password: hashed,
       access_level: 0,
-      storeId: 0,
     },
   });
 }

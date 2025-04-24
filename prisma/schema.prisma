@@ -32,6 +32,6 @@ model User {
   access_level    Int      @default(1)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  storeId         Int
-  Store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId         Int?
+  Store           Store?   @relation(fields: [storeId], references: [id])
 }
