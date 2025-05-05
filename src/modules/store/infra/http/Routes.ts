@@ -1,7 +1,5 @@
-import { Store } from '@prisma/client';
 import { Router } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
-import { keys } from 'ts-transformer-keys';
 import Admin from '../../../../shared/middleware/Admin';
 import StoreController from './Controller';
 
@@ -34,8 +32,8 @@ storeRouter.get(
       limit: Joi.number().integer().allow('', null),
       offset: Joi.number().integer().allow('', null),
       ordenation: Joi.string().allow('asc', 'desc', '', null),
-      orderBy: Joi.string().allow(...keys<Store>(), '', null),
-      searchBy: Joi.string().allow('', null),
+      orderBy: Joi.string().allow('name', 'email', '', null),
+      searchBy: Joi.string().allow('name', 'email', 'identification', '', null),
       searchFor: Joi.string().allow('', null),
     },
   }),

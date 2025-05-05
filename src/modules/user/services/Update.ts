@@ -11,22 +11,22 @@ export default class UpdateUserService {
 
   public async execute(
     id: number,
-    storeData: UpdateDTO<User>,
+    userData: UpdateDTO<User>,
     session: SessionInfo,
   ): Promise<User> {
-    const store = await this.repository.findById(id);
+    const user = await this.repository.findById(id);
 
-    if (!store) {
+    if (!user) {
       throw new AppError('ERRO: Nenhum usuário foi encontrado.', 404);
     }
 
-    if (storeData.email) {
+    if (userData.email) {
       const checkUserEmailExist = await this.repository.findByEmail(
-        storeData.email,
+        userData.email,
         session.storeId,
       );
 
-      if (checkUserEmailExist && storeData.email !== store.email) {
+      if (checkUserEmailExist && userData.email !== user.email) {
         throw new AppError(
           'ERRO: O endereço de e-mail já está sendo utilizado',
           409,
@@ -34,7 +34,7 @@ export default class UpdateUserService {
       }
     }
 
-    const updatedUser = await this.repository.update(store.id, storeData);
+    const updatedUser = await this.repository.update(user.id, userData);
 
     return updatedUser;
   }

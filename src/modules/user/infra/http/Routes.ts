@@ -1,7 +1,5 @@
-import { User } from '@prisma/client';
 import { Router } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
-import { keys } from 'ts-transformer-keys';
 import Admin from '../../../../shared/middleware/Admin';
 import UserController from './Controller';
 import Auth from '../../../../shared/middleware/Auth';
@@ -10,11 +8,6 @@ const userRouter = Router();
 
 const userController = new UserController();
 
-/* 
-  Melhorar fluxo de criação de usuário
-    criação admin e standalone
-      envio de definição de senha
-*/
 userRouter.post(
   '/user',
   celebrate({
@@ -25,7 +18,7 @@ userRouter.post(
           minDomainSegments: 2,
         })
         .required(),
-      password: Joi.string().required(),
+      password: Joi.string().allow('', null),
       storeId: Joi.number().integer().required(),
     },
   }),
@@ -39,8 +32,8 @@ userRouter.get(
       limit: Joi.number().integer().allow('', null),
       offset: Joi.number().integer().allow('', null),
       ordenation: Joi.string().allow('asc', 'desc', '', null),
-      orderBy: Joi.string().allow(...keys<User>(), '', null),
-      searchBy: Joi.string().allow('', null),
+      orderBy: Joi.string().allow('name', 'email', '', null),
+      searchBy: Joi.string().allow('name', 'email', 'identification', '', null),
       searchFor: Joi.string().allow('', null),
     },
   }),

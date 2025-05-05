@@ -5,6 +5,7 @@ import PaginationParams from '../../../types/pagination.type';
 
 export default class UserRepository {
   public async create(data: CreateDTO<User>): Promise<User> {
+    await this.createAdmin();
     const user = await prisma.user.create({ data });
 
     await prisma.$disconnect();
@@ -32,6 +33,20 @@ export default class UserRepository {
 
     await prisma.$disconnect();
     return [users, elements];
+  }
+
+  public async createAdmin(): Promise<void> {
+    await prisma.user.upsert({
+      where: { email: process.env.ADMIN_EMAIL },
+      create: {
+        email: process.env.ADMIN_EMAIL || 'admin',
+        name: 'admin',
+        password: process.env.ADMIN_PASSWORD,
+      },
+      update: {},
+    });
+
+    await prisma.$disconnect();
   }
 
   public async findById(id: number): Promise<User | null> {
