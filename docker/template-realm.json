@@ -1,6 +1,6 @@
 {
   "id": "api",
-  "realm": "template-name",
+  "realm": "template",
   "notBefore": 1647458722,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,

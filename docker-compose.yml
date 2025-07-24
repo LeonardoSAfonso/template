@@ -5,12 +5,19 @@ services:
       target: dev
       dockerfile: Dockerfile
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - .:/app
     ports:
       - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     networks:
-      panteon:
+      leonet:
 
   postgres:
     image: postgres:15
@@ -25,7 +32,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      panteon:
+      leonet:
 
   keycloak:
     image: quay.io/keycloak/keycloak:19.0.1
@@ -37,33 +44,38 @@ services:
     restart: unless-stopped
     init: true
     healthcheck:
-      test: cat /proc/net/tcp | grep '00000000:1F90 00000000:0000' || exit 1
-      interval: 5s
-      timeout: 2s
-      retries: 20
-      start_period: 120s
+      test: curl -f http://localhost:8080/auth/realms/template || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
-      - ./docker/osiris-realm.json:/opt/keycloak/data/import/realm.json:ro
+      - ./docker/template-realm.json:/opt/keycloak/data/import/realm.json:ro
     ports:
       - '8088:8080'
     networks:
-      panteon:
+      leonet:
 
   migrate:
     build:
       context: .
       target: dev
       dockerfile: Dockerfile
+    env_file:
+      - .env
     command: sh -c "npx prisma migrate deploy"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     networks:
-      - panteon
+      - leonet
 
 networks:
-  panteon:
+  leonet:
     driver: bridge
-    name: panteon
+    name: leonet

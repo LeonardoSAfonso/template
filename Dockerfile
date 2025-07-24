@@ -4,8 +4,8 @@
 FROM node:20-alpine3.20 AS base
 
 WORKDIR /app
-# Instala o curl
-RUN apk add --no-cache curl
+# Instala ferramentas necessárias
+RUN apk add --no-cache curl netcat-openbsd
 
 COPY package*.json ./
 
@@ -22,9 +22,8 @@ FROM deps AS dev
 
 COPY . .
 
-COPY docker/wait-for-it.sh /wait-for-it.sh
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /wait-for-it.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["npm", "run", "start:dev"]
@@ -44,15 +43,17 @@ FROM node:20-alpine3.20 AS production
 
 WORKDIR /app
 
+# Instala ferramentas necessárias para produção
+RUN apk add --no-cache curl netcat-openbsd
+
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
-COPY docker/wait-for-it.sh /wait-for-it.sh
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /wait-for-it.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "dist/main.js"]
