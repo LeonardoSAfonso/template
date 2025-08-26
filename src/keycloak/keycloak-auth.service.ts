@@ -78,7 +78,7 @@ export class KeycloakAuthService {
   }
 
   async checkIfAdminTokenStillValid(): Promise<void | null> {
-    const expiresIn = await jwt_decode(this.admin.accessToken)['exp'];
+    const expiresIn: number = await jwt_decode(this.admin.accessToken)['exp'];
     const currentUnixTimestamp = new Date().getTime();
 
     if (currentUnixTimestamp < expiresIn) return;
