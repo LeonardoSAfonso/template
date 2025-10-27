@@ -15,15 +15,21 @@ module.exports = {
     '!src/**/*.spec.ts',
     '!src/**/*.e2e-spec.ts',
     '!src/main.ts',
+    '!src/**/*.module.ts',
+    '!src/**/*.types.ts',
+    '!src/**/*.interface.ts',
+    '!src/**/*.interfaces.ts',
+    '!src/**/*.dto.ts',
+    '!src/main/**/*',
+    '!src/config/**/*',
   ],
   coverageDirectory: './coverage',
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
-    '^prisma/client$': '<rootDir>/test/mocks/prisma-client.ts',
-    '^@keycloak/keycloak-admin-client$':
-      '<rootDir>/test/mocks/keycloak-admin-client.ts',
+    '^test/(.*)$': '<rootDir>/test/$1',
+    '^prisma/client$': '<rootDir>/test/mocks/utils.ts',
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   coveragePathIgnorePatterns: [
@@ -33,7 +39,9 @@ module.exports = {
     '.e2e-spec.ts',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(@keycloak/keycloak-admin-client)/)',
+    'node_modules/(?!(@keycloak/keycloak-admin-client|url-join|url-template|camelize-ts)/)',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/src'],
+  testTimeout: 30000,
+  maxWorkers: 1,
 };

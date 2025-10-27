@@ -13,21 +13,21 @@ export default class CreateAccountService {
   ) {}
 
   public async execute(accountData: CreateAccountDTO): Promise<Account> {
-    const checkFarmEmailExist = await this.repository.findByEmail(
+    const checkAccountEmailExist = await this.repository.findByEmail(
       accountData.email,
     );
 
-    if (checkFarmEmailExist) {
+    if (checkAccountEmailExist) {
       throw new AppError(
         'ERRO: O endereço de e-mail já está sendo utilizado',
         409,
       );
     }
 
-    const checkFarmIdentificationExist =
-      await this.repository.findByIdentification(accountData.email);
+    const checkAccountIdentificationExist =
+      await this.repository.findByIdentification(accountData.identification);
 
-    if (checkFarmIdentificationExist) {
+    if (checkAccountIdentificationExist) {
       throw new AppError('ERRO: O CPF/CNPJ já está sendo utilizado', 409);
     }
 

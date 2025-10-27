@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import CreateAccountService from '../../../../src/account/services/create';
-import AccountRepository from '../../../../src/account/repository';
-import { KeycloakUserService } from '../../../../src/keycloak/keycloak-user.service';
-import AppError from '../../../../src/shared/AppError';
+import CreateAccountService from 'src/account/services/create';
+import AccountRepository from 'src/account/repository';
+import { KeycloakUserService } from 'src/keycloak/keycloak-user.service';
+import AppError from 'src/shared/AppError';
 import {
   mockAccountData,
   mockCreateAccountDTO,
   mockKeycloakUserService,
   clearAllMocks,
-} from '../../../mocks';
+} from 'test/mocks/utils';
 
 describe('CreateAccountService', () => {
   let service: CreateAccountService;
@@ -64,7 +64,7 @@ describe('CreateAccountService', () => {
         mockCreateAccountDTO.email,
       );
       expect(accountRepository.findByIdentification).toHaveBeenCalledWith(
-        mockCreateAccountDTO.email,
+        mockCreateAccountDTO.identification,
       );
       expect(keycloakUserService.create).toHaveBeenCalledWith({
         email: mockCreateAccountDTO.email,
@@ -110,7 +110,7 @@ describe('CreateAccountService', () => {
         mockCreateAccountDTO.email,
       );
       expect(accountRepository.findByIdentification).toHaveBeenCalledWith(
-        mockCreateAccountDTO.email,
+        mockCreateAccountDTO.identification,
       );
       expect(keycloakUserService.create).not.toHaveBeenCalled();
       expect(accountRepository.create).not.toHaveBeenCalled();
@@ -134,7 +134,7 @@ describe('CreateAccountService', () => {
         mockCreateAccountDTO.email,
       );
       expect(accountRepository.findByIdentification).toHaveBeenCalledWith(
-        mockCreateAccountDTO.email,
+        mockCreateAccountDTO.identification,
       );
       expect(keycloakUserService.create).toHaveBeenCalledWith({
         email: mockCreateAccountDTO.email,
@@ -163,7 +163,7 @@ describe('CreateAccountService', () => {
         mockCreateAccountDTO.email,
       );
       expect(accountRepository.findByIdentification).toHaveBeenCalledWith(
-        mockCreateAccountDTO.email,
+        mockCreateAccountDTO.identification,
       );
       expect(keycloakUserService.create).toHaveBeenCalledWith({
         email: mockCreateAccountDTO.email,
@@ -174,6 +174,55 @@ describe('CreateAccountService', () => {
         keycloakId: 'keycloak-user-id',
         ...mockCreateAccountDTO,
       });
+    });
+
+    it('should verify that password is deleted before creating account', async () => {
+      const accountData = { ...mockCreateAccountDTO };
+      jest.spyOn(accountRepository, 'findByEmail').mockResolvedValue(null);
+      jest
+        .spyOn(accountRepository, 'findByIdentification')
+        .mockResolvedValue(null);
+      jest.spyOn(keycloakUserService, 'create').mockResolvedValue({
+        id: 'keycloak-user-id',
+      });
+      jest
+        .spyOn(accountRepository, 'create')
+        .mockResolvedValue(mockAccountData);
+
+      await service.execute(accountData);
+
+      expect(accountData.password).toBeUndefined();
+    });
+
+    it('should call repository methods in correct order', async () => {
+      const callOrder: string[] = [];
+      jest.spyOn(accountRepository, 'findByEmail').mockImplementation(() => {
+        callOrder.push('findByEmail');
+        return Promise.resolve(null);
+      });
+      jest
+        .spyOn(accountRepository, 'findByIdentification')
+        .mockImplementation(() => {
+          callOrder.push('findByIdentification');
+          return Promise.resolve(null);
+        });
+      jest.spyOn(keycloakUserService, 'create').mockImplementation(() => {
+        callOrder.push('keycloakCreate');
+        return Promise.resolve({ id: 'keycloak-user-id' });
+      });
+      jest.spyOn(accountRepository, 'create').mockImplementation(() => {
+        callOrder.push('accountCreate');
+        return Promise.resolve(mockAccountData);
+      });
+
+      await service.execute(mockCreateAccountDTO);
+
+      expect(callOrder).toEqual([
+        'findByEmail',
+        'findByIdentification',
+        'keycloakCreate',
+        'accountCreate',
+      ]);
     });
   });
 });

@@ -1,5 +1,20 @@
 // Mocks comuns para testes
 
+// Mock do PrismaClient para moduleNameMapper
+export class PrismaClient {
+  account = {
+    create: jest.fn(),
+    findMany: jest.fn(),
+    findFirst: jest.fn(),
+    findUnique: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    count: jest.fn(),
+  };
+  $connect = jest.fn();
+  $disconnect = jest.fn();
+}
+
 // Mock do PrismaService
 export const mockPrismaService = {
   account: {

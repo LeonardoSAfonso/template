@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { KeycloakAuthService } from 'src/keycloak/keycloak-auth.service';
 import { Token } from 'src/keycloak/domain/token.dto';
-import { mockKeycloakAdminClient } from '../../mocks/utils';
+import { mockKeycloakAdminClient } from 'test/mocks/utils';
 import { ISSUER_CLIENT } from 'src/keycloak/constants';
 import { BaseClient } from 'openid-client';
 import jwt_decode from 'jwt-decode';

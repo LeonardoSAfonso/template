@@ -42,6 +42,10 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+.env.sonar
+
+# Backups do SonarQube
+backup/
 
 # temp directory
 .temp

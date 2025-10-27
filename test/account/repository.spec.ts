@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import AccountRepository from '../../../src/account/repository';
-import { PrismaService } from '../../../src/orm/prisma.service';
+import AccountRepository from 'src/account/repository';
+import { PrismaService } from 'src/orm/prisma.service';
+import { PaginationParams } from 'src/shared/types/pagination.type';
 import {
   mockPrismaService,
+  clearAllMocks,
   mockAccountData,
   mockCreateAccountDTO,
-  mockUpdateAccountDTO,
   mockPaginationParams,
-  clearAllMocks,
-} from '../../mocks/utils';
-import { PaginationParams } from '../../../src/shared/types/pagination.type';
+  mockUpdateAccountDTO,
+} from 'test/mocks/utils';
 
 describe('AccountRepository', () => {
   let repository: AccountRepository;

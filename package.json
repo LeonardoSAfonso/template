@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "sonar:up": "docker-compose up -d sonarqube sonarqube-db",
+    "sonar:down": "docker-compose down sonarqube sonarqube-db",
+    "sonar:scan": "docker-compose run --rm sonar-scanner",
+    "sonar:analysis": "npm run test:cov && npm run sonar:scan",
+    "sonar:logs": "docker-compose logs -f sonarqube"
   },
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^26.2.5",

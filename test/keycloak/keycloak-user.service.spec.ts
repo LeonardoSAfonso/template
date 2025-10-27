@@ -4,7 +4,7 @@ import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import { KeycloakUserService } from 'src/keycloak/keycloak-user.service';
 import { UserNotFoundError } from 'src/keycloak/errors/user-not-found.error';
 import { UserDTO } from 'src/keycloak/domain/user.dto';
-import { mockKeycloakAdminClient } from '../../mocks/utils';
+import { mockKeycloakAdminClient } from 'test/mocks/utils';
 
 describe('KeycloakUserService', () => {
   let service: KeycloakUserService;

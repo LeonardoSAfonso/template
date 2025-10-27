@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import AccountController from '../../../src/account/account.controller';
-import CreateAccountService from '../../../src/account/services/create';
-import DeleteAccountService from '../../../src/account/services/delete';
-import FindAccountsService from '../../../src/account/services/find';
-import FindOneAccountService from '../../../src/account/services/findOne';
-import UpdateAccountService from '../../../src/account/services/update';
-import { PaginationParams } from '../../../src/shared/types/pagination.type';
 
 import { afterEach } from 'node:test';
+import AccountController from 'src/account/account.controller';
+import CreateAccountService from 'src/account/services/create';
+import DeleteAccountService from 'src/account/services/delete';
+import FindAccountsService from 'src/account/services/find';
+import FindOneAccountService from 'src/account/services/findOne';
+import UpdateAccountService from 'src/account/services/update';
+import { PaginationParams } from 'src/shared/types/pagination.type';
 import {
   mockAccountData,
   mockCreateAccountDTO,

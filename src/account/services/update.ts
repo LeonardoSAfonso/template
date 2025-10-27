@@ -18,11 +18,11 @@ export default class UpdateAccountService {
     }
 
     if (accountData.email) {
-      const checkFarmEmailExist = await this.repository.findByEmail(
+      const checkAccountEmailExist = await this.repository.findByEmail(
         accountData.email,
       );
 
-      if (checkFarmEmailExist && accountData.email !== account.email) {
+      if (checkAccountEmailExist && accountData.email !== account.email) {
         throw new AppError(
           'ERRO: O endereço de e-mail já está sendo utilizado',
           409,
@@ -31,12 +31,11 @@ export default class UpdateAccountService {
     }
 
     if (accountData.identification) {
-      const checkFarmEmailExist = await this.repository.findByEmail(
-        accountData.identification,
-      );
+      const checkAccountIdentificationExist =
+        await this.repository.findByIdentification(accountData.identification);
 
       if (
-        checkFarmEmailExist &&
+        checkAccountIdentificationExist &&
         accountData.identification !== account.identification
       ) {
         throw new AppError('ERRO: O CPF/CNPJ já está sendo utilizado', 409);
