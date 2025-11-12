@@ -58,49 +58,19 @@ npm run test:debug
 **Objetivo:** Testar unidades individuais de código em isolamento.
 
 **Características:**
+
 - Testam uma única função/classe
 - Usam mocks para dependências
 - Rápidos de executar
 - Não dependem de recursos externos
 
 **Quando usar:**
+
 - Services
 - Validators
 - Utilities
 - Helpers
 - Transformers
-
-**Exemplo:**
-
-```typescript
-// create-account.service.spec.ts
-describe('CreateAccountService', () => {
-  let sut: CreateAccountService;
-  let stubRepository: jest.Mocked<AccountRepository>;
-
-  beforeEach(() => {
-    stubRepository = {
-      findByEmail: jest.fn(),
-      create: jest.fn(),
-    } as any;
-    
-    sut = new CreateAccountService(stubRepository);
-  });
-
-  it('should create an account', async () => {
-    // Arrange
-    const inputData = { name: 'Test', email: 'test@test.com' };
-    const expectedAccount = { id: '1', ...inputData };
-    stubRepository.create.mockResolvedValue(expectedAccount);
-
-    // Act
-    const actualAccount = await sut.execute(inputData);
-
-    // Assert
-    expect(actualAccount).toEqual(expectedAccount);
-  });
-});
-```
 
 ---
 
@@ -109,50 +79,17 @@ describe('CreateAccountService', () => {
 **Objetivo:** Testar a integração entre múltiplos componentes.
 
 **Características:**
+
 - Testam interação entre componentes
 - Podem usar banco de dados de teste
 - Mais lentos que unitários
 - Testam fluxos completos
 
 **Quando usar:**
+
 - Repositories com banco de dados
 - Módulos completos
 - Integração com serviços externos (mockados)
-
-**Exemplo:**
-
-```typescript
-describe('AccountModule Integration', () => {
-  let app: INestApplication;
-  let repository: AccountRepository;
-
-  beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AccountModule, OrmModule],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-    repository = moduleRef.get<AccountRepository>(AccountRepository);
-    await app.init();
-  });
-
-  it('should create and find account', async () => {
-    // Arrange
-    const accountData = { name: 'Test', email: 'test@test.com' };
-
-    // Act
-    const created = await repository.create(accountData);
-    const found = await repository.findById(created.id);
-
-    // Assert
-    expect(found).toEqual(created);
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
-});
-```
 
 ---
 
@@ -161,128 +98,18 @@ describe('AccountModule Integration', () => {
 **Objetivo:** Testar o sistema completo do ponto de vista do usuário.
 
 **Características:**
+
 - Testam API completa (HTTP)
 - Incluem autenticação
 - Usam banco de dados de teste
 - Mais lentos
 
 **Quando usar:**
+
 - Controllers
 - Fluxos completos de API
 - Autenticação/Autorização
 - Validações de endpoints
-
-**Exemplo:**
-
-```typescript
-describe('Account E2E', () => {
-  let app: INestApplication;
-  let authToken: string;
-
-  beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-    await app.init();
-
-    // Obter token de autenticação
-    const loginResponse = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({ username: 'admin', password: 'admin' });
-    
-    authToken = loginResponse.body.access_token;
-  });
-
-  it('/account (POST)', async () => {
-    return request(app.getHttpServer())
-      .post('/account')
-      .set('Authorization', `Bearer ${authToken}`)
-      .send({
-        name: 'Test User',
-        email: 'test@example.com',
-        identification: '12345678900',
-        password: 'SecurePass123!',
-      })
-      .expect(201)
-      .expect((res) => {
-        expect(res.body).toHaveProperty('id');
-        expect(res.body.name).toBe('Test User');
-      });
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
-});
-```
-
----
-
-## ⚙️ Configuração
-
-### jest.config.js
-
-```javascript
-module.exports = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: './',
-  testRegex: '.*\\.spec\\.ts$',
-  transform: {
-    '^.+\\.(t|j)s$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
-  },
-  collectCoverageFrom: [
-    'src/**/*.(t|j)s',
-    '!src/**/*.spec.ts',
-    '!src/**/*.e2e-spec.ts',
-    '!src/main.ts',
-    '!src/**/*.module.ts',
-    '!src/**/*.dto.ts',
-  ],
-  coverageDirectory: './coverage',
-  testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/src/$1',
-    '^test/(.*)$': '<rootDir>/test/$1',
-    '^prisma/client$': '<rootDir>/test/mocks/utils.ts',
-  },
-  testTimeout: 30000,
-  maxWorkers: 1,
-};
-```
-
-### test/setup.ts
-
-```typescript
-// Configurações globais para testes
-beforeAll(() => {
-  // Setup global
-});
-
-afterAll(() => {
-  // Cleanup global
-});
-
-// Mock de variáveis de ambiente
-process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db';
-process.env.JWT_SECRET = 'test-secret';
-```
-
-### test/jest-e2e.json
-
-```json
-{
-  "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": "../",
-  "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
-  "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  }
-}
-```
 
 ---
 
@@ -329,7 +156,7 @@ test/
 describe('MyService', () => {
   let sut: MyService;              // System Under Test
   let stubRepository: Repository;  // Stub/Mock de dependência
-  
+
   // Dentro dos testes
   const inputData = {...};         // Dados de entrada
   const mockData = {...};          // Dados mockados
@@ -360,427 +187,93 @@ it('should do something', async () => {
 });
 ```
 
-### Testando Services
+## 🧪 Configuração de Testes
 
-```typescript
-describe('CreateAccountService', () => {
-  let sut: CreateAccountService;
-  let stubRepository: jest.Mocked<AccountRepository>;
-  let stubKeycloakService: jest.Mocked<KeycloakUserService>;
+### jest.config.js
 
-  beforeEach(() => {
-    stubRepository = {
-      findByEmail: jest.fn(),
-      findByIdentification: jest.fn(),
-      create: jest.fn(),
-    } as any;
+**Principais configurações:**
 
-    stubKeycloakService = {
-      create: jest.fn(),
-    } as any;
+- **testRegex**: Arquivos de teste com `.spec.ts`
+- **setupFilesAfterEnv**: Setup executado antes dos testes
+- **moduleNameMapper**: Resolve imports e mocks
 
-    sut = new CreateAccountService(stubRepository, stubKeycloakService);
-  });
+### Arquivo .env.test
 
-  describe('execute', () => {
-    it('should create account successfully', async () => {
-      // Arrange
-      const inputAccount = {
-        name: 'John Doe',
-        email: 'john@example.com',
-        identification: '12345678900',
-        password: 'SecurePass123!',
-      };
+Para testes, crie um arquivo `.env.test`:
 
-      const mockKcUser = { id: 'kc-uuid' };
-      const expectedAccount = {
-        id: 'uuid',
-        ...inputAccount,
-        keycloakId: mockKcUser.id,
-      };
+```bash
+DATABASE_URL="postgresql://root:docker@localhost:5432/osiris_db_test?schema=public"
+NODE_ENV=test
 
-      stubRepository.findByEmail.mockResolvedValue(null);
-      stubRepository.findByIdentification.mockResolvedValue(null);
-      stubKeycloakService.create.mockResolvedValue(mockKcUser);
-      stubRepository.create.mockResolvedValue(expectedAccount);
+# Keycloak (pode usar mock ou instância de teste)
+KC_AUTH_SERVER_URL=http://localhost:8088/auth
+KC_REALM=template
+KC_CLIENT_ID=template-client
+KC_SECRET=test-secret
+KC_ADMIN_USER=admin
+KC_ADMIN_PASSWORD=admin
 
-      // Act
-      const actualAccount = await sut.execute(inputAccount);
-
-      // Assert
-      expect(actualAccount).toEqual(expectedAccount);
-      expect(stubRepository.findByEmail).toHaveBeenCalledWith(inputAccount.email);
-      expect(stubKeycloakService.create).toHaveBeenCalled();
-      expect(stubRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          keycloakId: mockKcUser.id,
-        })
-      );
-    });
-
-    it('should throw error if email already exists', async () => {
-      // Arrange
-      const inputAccount = { email: 'existing@example.com' };
-      const existingAccount = { id: '1', email: inputAccount.email };
-      
-      stubRepository.findByEmail.mockResolvedValue(existingAccount);
-
-      // Act & Assert
-      await expect(sut.execute(inputAccount as any)).rejects.toThrow(
-        new AppError('ERRO: O endereço de e-mail já está sendo utilizado', 409)
-      );
-      expect(stubRepository.create).not.toHaveBeenCalled();
-    });
-
-    it('should throw error if identification already exists', async () => {
-      // Arrange
-      const inputAccount = { 
-        email: 'new@example.com',
-        identification: '12345678900',
-      };
-      const existingAccount = { id: '1', identification: inputAccount.identification };
-      
-      stubRepository.findByEmail.mockResolvedValue(null);
-      stubRepository.findByIdentification.mockResolvedValue(existingAccount);
-
-      // Act & Assert
-      await expect(sut.execute(inputAccount as any)).rejects.toThrow(
-        new AppError('ERRO: O CPF/CNPJ já está sendo utilizado', 409)
-      );
-      expect(stubRepository.create).not.toHaveBeenCalled();
-    });
-  });
-});
-```
-
-### Testando Validators
-
-```typescript
-describe('IsCPFOrCNPJ Validator', () => {
-  let validator: IsCPFOrCNPJ;
-
-  beforeEach(() => {
-    validator = new IsCPFOrCNPJ();
-  });
-
-  it('should validate valid CPF', () => {
-    const validCPF = '12345678900';
-    expect(validator.validate(validCPF)).toBe(true);
-  });
-
-  it('should invalidate invalid CPF', () => {
-    const invalidCPF = '11111111111';
-    expect(validator.validate(invalidCPF)).toBe(false);
-  });
-
-  it('should validate valid CNPJ', () => {
-    const validCNPJ = '12345678000190';
-    expect(validator.validate(validCNPJ)).toBe(true);
-  });
-});
+JWT_SECRET=test-jwt-secret
 ```
 
 ---
 
-## 🔗 Testes de Integração
+## 📊 Configuração SonarQube
 
-### Testando com TestingModule
+### sonar-project.properties
 
-```typescript
-describe('AccountRepository Integration', () => {
-  let repository: AccountRepository;
-  let prisma: PrismaService;
+```properties
+sonar.projectKey=template
+sonar.projectName=Template NestJS
+sonar.projectVersion=0.0.1
 
-  beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [OrmModule],
-      providers: [AccountRepository],
-    }).compile();
+sonar.host.url=http://sonarqube:9000
 
-    repository = moduleRef.get<AccountRepository>(AccountRepository);
-    prisma = moduleRef.get<PrismaService>(PrismaService);
-  });
+sonar.sources=src
+sonar.tests=test
 
-  beforeEach(async () => {
-    // Limpar banco de dados antes de cada teste
-    await prisma.account.deleteMany();
-  });
+sonar.exclusions=\
+  **/node_modules/**,\
+  **/dist/**,\
+  **/coverage/**
 
-  afterAll(async () => {
-    await prisma.$disconnect();
-  });
-
-  describe('create', () => {
-    it('should create account in database', async () => {
-      // Arrange
-      const accountData = {
-        name: 'Test User',
-        email: 'test@example.com',
-        identification: '12345678900',
-        keycloakId: 'kc-uuid',
-      };
-
-      // Act
-      const created = await repository.create(accountData);
-
-      // Assert
-      expect(created).toHaveProperty('id');
-      expect(created.email).toBe(accountData.email);
-
-      // Verificar no banco
-      const found = await prisma.account.findUnique({
-        where: { id: created.id },
-      });
-      expect(found).toBeTruthy();
-    });
-  });
-
-  describe('findByEmail', () => {
-    it('should find account by email', async () => {
-      // Arrange
-      const accountData = {
-        name: 'Test',
-        email: 'test@test.com',
-        identification: '12345678900',
-        keycloakId: 'kc-uuid',
-      };
-      await repository.create(accountData);
-
-      // Act
-      const found = await repository.findByEmail(accountData.email);
-
-      // Assert
-      expect(found).toBeTruthy();
-      expect(found.email).toBe(accountData.email);
-    });
-
-    it('should return null if not found', async () => {
-      // Act
-      const found = await repository.findByEmail('nonexistent@test.com');
-
-      // Assert
-      expect(found).toBeNull();
-    });
-  });
-});
+sonar.typescript.tsconfigPath=tsconfig.json
+sonar.typescript.lcov.reportPaths=coverage/lcov.info
 ```
 
----
+### Primeira Execução
 
-## 🌐 Testes E2E
+1. **Subir SonarQube:**
 
-### Testando Controllers
+   ```bash
+   npm run sonar:up
+   ```
 
-```typescript
-describe('AccountController (e2e)', () => {
-  let app: INestApplication;
-  let authToken: string;
-  let createdAccountId: string;
+2. **Aguardar inicialização** (pode levar alguns minutos)
 
-  beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    })
-      .overrideProvider(KeycloakUserService)
-      .useValue({
-        create: jest.fn().mockResolvedValue({ id: 'kc-mock-id' }),
-      })
-      .compile();
+3. **Acessar:** http://localhost:9000
 
-    app = moduleRef.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
+   - Login: `admin` / `admin`
+   - Será solicitado trocar a senha
 
-    // Obter token
-    const loginRes = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({ username: 'admin', password: 'admin' });
-    
-    authToken = loginRes.body.access_token;
-  });
+4. **Gerar Token:**
 
-  afterAll(async () => {
-    await app.close();
-  });
+   - My Account → Security → Generate Token
 
-  describe('/account (POST)', () => {
-    it('should create account', () => {
-      return request(app.getHttpServer())
-        .post('/account')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({
-          name: 'Test User',
-          email: 'test@example.com',
-          identification: '12345678900',
-          password: 'SecurePass123!',
-        })
-        .expect(201)
-        .expect((res) => {
-          expect(res.body).toHaveProperty('id');
-          expect(res.body.name).toBe('Test User');
-          createdAccountId = res.body.id;
-        });
-    });
+5. **Adicionar ao .env:**
 
-    it('should return 400 for invalid data', () => {
-      return request(app.getHttpServer())
-        .post('/account')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({
-          name: 'T', // Muito curto
-          email: 'invalid-email',
-        })
-        .expect(400);
-    });
+   ```bash
+   SONAR_TOKEN=seu_token_aqui
+   ```
 
-    it('should return 401 without authentication', () => {
-      return request(app.getHttpServer())
-        .post('/account')
-        .send({ name: 'Test' })
-        .expect(401);
-    });
-  });
-
-  describe('/account (GET)', () => {
-    it('should list accounts', () => {
-      return request(app.getHttpServer())
-        .get('/account')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res) => {
-          expect(Array.isArray(res.body)).toBe(true);
-        });
-    });
-
-    it('should paginate accounts', () => {
-      return request(app.getHttpServer())
-        .get('/account?limit=10&offset=0')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200);
-    });
-  });
-
-  describe('/account/:id (GET)', () => {
-    it('should get account by id', () => {
-      return request(app.getHttpServer())
-        .get(`/account/${createdAccountId}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.id).toBe(createdAccountId);
-        });
-    });
-
-    it('should return 404 for non-existent account', () => {
-      return request(app.getHttpServer())
-        .get('/account/non-existent-id')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(404);
-    });
-  });
-});
-```
-
----
-
-## 🎭 Mocks e Stubs
-
-### Mock de Repository
-
-```typescript
-// test/mocks/repository.mock.ts
-export const mockAccountRepository = {
-  create: jest.fn(),
-  findById: jest.fn(),
-  findByEmail: jest.fn(),
-  findAll: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-};
-```
-
-### Mock de Prisma
-
-```typescript
-// test/mocks/prisma.mock.ts
-export const mockPrismaService = {
-  account: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
-  $connect: jest.fn(),
-  $disconnect: jest.fn(),
-};
-```
-
-### Mock de Keycloak
-
-```typescript
-// test/mocks/keycloak.mock.ts
-export const mockKeycloakUserService = {
-  create: jest.fn().mockResolvedValue({ id: 'kc-mock-id' }),
-  update: jest.fn(),
-  delete: jest.fn(),
-  findById: jest.fn(),
-};
-
-export const mockKeycloakAuthService = {
-  login: jest.fn().mockResolvedValue({
-    access_token: 'mock-token',
-    refresh_token: 'mock-refresh-token',
-  }),
-  logout: jest.fn(),
-  refreshToken: jest.fn(),
-};
-```
-
-### Usando Mocks nos Testes
-
-```typescript
-describe('MyService', () => {
-  let sut: MyService;
-  let stubRepository: typeof mockAccountRepository;
-
-  beforeEach(() => {
-    stubRepository = { ...mockAccountRepository };
-    sut = new MyService(stubRepository as any);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-});
-```
+6. **Executar análise:**
+   ```bash
+   npm run sonar:analysis
+   ```
 
 ---
 
 ## 📊 Cobertura de Código
-
-### Configuração
-
-```javascript
-// jest.config.js
-collectCoverageFrom: [
-  'src/**/*.(t|j)s',
-  '!src/**/*.spec.ts',
-  '!src/**/*.e2e-spec.ts',
-  '!src/main.ts',
-  '!src/**/*.module.ts',
-  '!src/**/*.dto.ts',
-  '!src/**/*.interface.ts',
-],
-coverageThresholds: {
-  global: {
-    branches: 80,
-    functions: 80,
-    lines: 80,
-    statements: 80,
-  },
-},
-```
 
 ### Gerar Relatório
 
@@ -801,9 +294,299 @@ open coverage/lcov-report/index.html
 
 ### Meta de Cobertura
 
-- **Mínimo aceitável**: 80%
-- **Recomendado**: 90%
-- **Ideal**: 95%+
+- **Recomendado**: 100%
+- **Mínimo aceitável**: 90%
+- **Cobertura aceita na main**: 95%+
+
+---
+
+## 📊 Análise de Qualidade com SonarQube
+
+### Configuração Inicial
+
+Antes de executar a análise, certifique-se de que o SonarQube está configurado:
+
+#### 1. Subir SonarQube
+
+```bash
+# Iniciar containers do SonarQube
+npm run sonar:up
+
+# Aguardar inicialização (2-3 minutos na primeira vez)
+# Verificar status
+docker-compose ps sonarqube
+```
+
+#### 2. Configurar Token de Acesso
+
+**Primeira vez:**
+
+1. Acesse: http://localhost:9000
+2. Login inicial: `admin` / `admin`
+3. O sistema pedirá para alterar a senha
+4. Vá em **My Account** → **Security** → **Generate Token**
+5. Dê um nome (ex: "local-dev") e clique em **Generate**
+6. Copie o token gerado
+
+**Adicionar token ao ambiente:**
+
+```bash
+# Opção 1: Adicionar ao arquivo .env
+echo "SONAR_TOKEN=seu_token_aqui" >> .env
+
+# Opção 2: Exportar temporariamente
+export SONAR_TOKEN=seu_token_aqui
+```
+
+### Executar Análise
+
+#### Análise Completa (Recomendado)
+
+Executa testes com cobertura e depois envia para o SonarQube:
+
+```bash
+# Análise completa: testes + cobertura + scan
+npm run sonar:analysis
+```
+
+Este comando executa:
+
+1. `npm run test:cov` - Gera cobertura de testes
+2. `docker-compose run sonar-scanner` - Analisa código e envia para SonarQube
+
+**Tempo estimado:** 2-5 minutos (dependendo do tamanho do projeto)
+
+#### Apenas Scan (Sem Testes)
+
+Se você já executou os testes e só quer fazer o scan:
+
+```bash
+# Apenas scan do código
+npm run sonar:scan
+```
+
+**Uso:** Quando você já tem o relatório de cobertura atualizado.
+
+### Visualizar Resultados
+
+#### No SonarQube UI
+
+1. Acesse: http://localhost:9000
+2. Clique no projeto "Template NestJS"
+3. Visualize:
+   - **Overview**: Resumo geral da qualidade
+   - **Issues**: Problemas encontrados (Bugs, Vulnerabilities, Code Smells)
+   - **Measures**: Métricas detalhadas
+   - **Code**: Código com anotações
+
+#### Via Logs
+
+```bash
+# Ver logs em tempo real
+npm run sonar:logs
+
+# ou
+docker-compose logs -f sonarqube
+```
+
+### Métricas do SonarQube
+
+O SonarQube avalia:
+
+#### Quality Gate (Portão de Qualidade)
+
+Critérios que o código deve atender:
+
+- **Coverage**: >= 80% de cobertura
+- **Duplications**: < 3% de código duplicado
+- **Maintainability Rating**: A (melhor)
+- **Reliability Rating**: A (sem bugs)
+- **Security Rating**: A (sem vulnerabilidades)
+
+#### Tipos de Issues
+
+1. **Bugs** 🐛
+
+   - Código que provavelmente está errado
+   - Pode causar comportamento inesperado
+   - **Prioridade:** Alta
+
+2. **Vulnerabilities** 🔒
+
+   - Problemas de segurança
+   - Podem ser explorados por atacantes
+   - **Prioridade:** Crítica
+
+3. **Code Smells** 👃
+
+   - Código que funciona mas pode ser melhorado
+   - Dificulta manutenção
+   - **Prioridade:** Média
+
+4. **Security Hotspots** 🔥
+   - Código que precisa revisão de segurança
+   - Não necessariamente vulnerável, mas sensível
+   - **Prioridade:** Alta
+
+### Workflow Recomendado
+
+#### Antes de Fazer Commit
+
+```bash
+# 1. Executar testes localmente
+npm run test
+
+# 2. Verificar cobertura
+npm run test:cov
+
+# 3. Executar linter
+npm run lint
+
+# 4. Análise SonarQube
+npm run sonar:analysis
+
+# 5. Verificar resultados no dashboard
+# http://localhost:9000
+```
+
+#### Durante Desenvolvimento
+
+```bash
+# Modo watch para testes
+npm run test:watch
+
+# Quando finalizar uma feature, executar análise completa
+npm run sonar:analysis
+```
+
+#### Antes de Pull Request
+
+```bash
+# 1. Análise completa
+npm run sonar:analysis
+
+# 2. Garantir que Quality Gate passou
+# 3. Corrigir issues críticos encontrados
+# 4. Documentar issues conhecidos (se aplicável)
+```
+
+### Comandos Úteis
+
+```bash
+# Subir apenas SonarQube
+npm run sonar:up
+
+# Parar SonarQube
+npm run sonar:down
+
+# Ver logs
+npm run sonar:logs
+
+# Análise completa
+npm run sonar:analysis
+
+# Apenas scan
+npm run sonar:scan
+
+# Reiniciar SonarQube (se travar)
+docker-compose restart sonarqube
+
+# Remover volumes (reset completo)
+docker-compose down -v sonarqube sonarqube-db
+```
+
+### Configuração Avançada
+
+#### Excluir Arquivos da Análise
+
+Edite `sonar-project.properties`:
+
+```properties
+sonar.exclusions=\
+  **/node_modules/**,\
+  **/dist/**,\
+  **/coverage/**,\
+  **/test/**,\
+  **/*.spec.ts,\
+  **/*.test.ts
+```
+
+#### Ajustar Limites de Cobertura
+
+```properties
+sonar.coverage.exclusions=\
+  **/*.dto.ts,\
+  **/*.interface.ts,\
+  **/*.module.ts,\
+  **/main.ts
+```
+
+### Troubleshooting SonarQube
+
+#### Erro: "Unauthorized"
+
+**Causa:** Token inválido ou não configurado
+
+**Solução:**
+
+```bash
+# Verificar se token está no .env
+cat .env | grep SONAR_TOKEN
+
+# Gerar novo token no SonarQube
+# Atualizar .env
+```
+
+#### Erro: "Quality Gate Failed"
+
+**Causa:** Código não atende aos critérios mínimos
+
+**Solução:**
+
+1. Acessar http://localhost:9000
+2. Ver quais métricas falharam
+3. Corrigir issues encontrados
+4. Aumentar cobertura de testes se necessário
+
+#### SonarQube Muito Lento
+
+**Solução:**
+
+```bash
+# Aumentar memória do container
+# Editar docker-compose.yml:
+services:
+  sonarqube:
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+```
+
+#### Container SonarQube Travou
+
+**Solução:**
+
+```bash
+# Reiniciar
+docker-compose restart sonarqube
+
+# Se não resolver, recriar
+docker-compose down sonarqube
+docker-compose up -d sonarqube
+```
+
+### Boas Práticas
+
+1. **Execute análise regularmente**: Idealmente a cada feature/fix
+2. **Corrija issues críticos imediatamente**: Bugs e vulnerabilidades primeiro
+3. **Mantenha cobertura alta**: Mínimo 80%, ideal 90%+
+4. **Revise code smells**: Melhoram manutenibilidade
+5. **Documente exceções**: Se não puder corrigir algo, documente o porquê
+6. **Configure Quality Gate**: Adapte aos padrões do seu time
+7. **Integre no CI/CD**: Automação garante qualidade contínua
 
 ---
 
@@ -962,4 +745,3 @@ it('should handle even numbers', () => {
 - [NestJS Testing](https://docs.nestjs.com/fundamentals/testing)
 - [Test Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html)
 - [Testing Best Practices](https://github.com/goldbergyoni/javascript-testing-best-practices)
-

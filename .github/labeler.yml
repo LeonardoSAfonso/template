@@ -1,0 +1,98 @@
+# Configuração de labels automáticos para PRs
+# Adiciona labels baseado nos arquivos modificados
+
+# Documentação
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['docs/**/*', '*.md', 'CHANGELOG.md']
+
+# Testes
+tests:
+  - changed-files:
+    - any-glob-to-any-file: ['test/**/*', '**/*.spec.ts', '**/*.test.ts', '**/*.e2e-spec.ts']
+
+# Infraestrutura/DevOps
+infrastructure:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - 'docker/**/*'
+      - 'docker-compose*.yml'
+      - 'Dockerfile'
+      - '.github/**/*'
+      - '.dockerignore'
+
+# Configuração
+configuration:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '*.config.js'
+      - '*.config.ts'
+      - 'tsconfig*.json'
+      - '.eslintrc*'
+      - '.prettierrc*'
+      - 'nest-cli.json'
+      - 'sonar-project.properties'
+
+# Banco de Dados
+database:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'prisma/**/*'
+      - '**/*.prisma'
+
+# Backend/API
+backend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/**/*.ts'
+      - '!src/**/*.spec.ts'
+      - '!src/**/*.test.ts'
+
+# DTOs
+dto:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.dto.ts']
+
+# Services
+service:
+  - changed-files:
+    - any-glob-to-any-file: ['**/services/**/*.ts']
+
+# Controllers
+controller:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.controller.ts']
+
+# Repositories
+repository:
+  - changed-files:
+    - any-glob-to-any-file: ['**/repository.ts', '**/repositories/**/*.ts']
+
+# Modules
+module:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.module.ts']
+
+# Autenticação
+auth:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - 'src/keycloak/**/*'
+      - '**/auth/**/*'
+
+# Dependências
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'npm-shrinkwrap.json'
+
+# Crítico - Arquivos sensíveis
+critical:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/main.ts'
+      - 'src/app.module.ts'
+      - 'prisma/schema.prisma'
+

@@ -130,16 +130,36 @@ git push origin feature/nome-da-funcionalidade
 
 ## 📝 Padrões de Código
 
-### TypeScript Guidelines
+### Documentação Completa
 
-Siga as diretrizes no README principal:
+Para padrões de código detalhados, consulte: **[docs/CODING_STANDARDS.md](./CODING_STANDARDS.md)**
 
-- **Nomenclatura:** camelCase para variáveis, PascalCase para classes
-- **Tipagem:** Sempre declarar tipos
-- **Funções:** Curtas (<20 linhas) com propósito único
-- **Classes:** SOLID e Clean Code
+Este documento inclui:
 
-### ESLint
+- Convenções TypeScript e NestJS
+- Nomenclatura e formatação
+- Boas práticas de classes e funções
+- Padrões de banco de dados
+- Convenções de testes
+- Exemplos de código bom e ruim
+
+### Resumo Rápido
+
+**Nomenclatura:**
+
+- Classes: `PascalCase`
+- Variáveis/Funções: `camelCase`
+- Arquivos: `kebab-case`
+- Constantes: `UPPERCASE`
+
+**Princípios:**
+
+- Sempre declarar tipos (evite `any`)
+- Funções curtas (< 20 linhas) com propósito único
+- Classes seguindo SOLID e Clean Code
+- Código em inglês, documentação em português
+
+### Ferramentas de Qualidade
 
 ```bash
 # Verificar problemas
@@ -147,13 +167,15 @@ npm run lint
 
 # Corrigir automaticamente
 npm run lint -- --fix
-```
 
-### Prettier
-
-```bash
 # Formatar código
 npm run format
+
+# Executar testes
+npm run test
+
+# Análise completa
+npm run sonar:analysis
 ```
 
 ---
@@ -259,9 +281,10 @@ export default class MyEntityRepository {
       skip: offset,
       take: limit,
       orderBy: orderBy ? { [orderBy]: order } : undefined,
-      where: searchBy && searchFor
-        ? { [searchBy]: { contains: searchFor } }
-        : undefined,
+      where:
+        searchBy && searchFor
+          ? { [searchBy]: { contains: searchFor } }
+          : undefined,
     });
   }
 
@@ -296,7 +319,7 @@ export default class CreateMyEntityService {
   public async execute(data: CreateMyEntityDTO): Promise<MyEntity> {
     // Validações de negócio
     const existingEntity = await this.repository.findByName(data.name);
-    
+
     if (existingEntity) {
       throw new AppError('Entity already exists', 409);
     }
@@ -457,7 +480,7 @@ describe('CreateMyEntityService', () => {
 
     // Act & Assert
     await expect(sut.execute(inputData)).rejects.toThrow(
-      new AppError('Entity already exists', 409)
+      new AppError('Entity already exists', 409),
     );
   });
 });
@@ -607,7 +630,7 @@ model NewTable {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relacionamentos
   userId    String
   user      User     @relation(fields: [userId], references: [id])
@@ -625,7 +648,7 @@ npx prisma migrate dev --name add_new_table
 ```prisma
 model ExistingTable {
   // colunas existentes...
-  
+
   newColumn String @default("")
 }
 ```
@@ -669,7 +692,7 @@ model PostCategory {
   categoryId String
   post       Post     @relation(fields: [postId], references: [id])
   category   Category @relation(fields: [categoryId], references: [id])
-  
+
   @@id([postId, categoryId])
 }
 ```
@@ -746,40 +769,98 @@ Antes de abrir um PR, certifique-se de:
 
 ### Template de PR
 
+O projeto possui um **template automático de Pull Request** que será preenchido automaticamente quando você criar um novo PR.
+
+O template está localizado em `.github/pull_request_template.md` e inclui:
+
+- ✅ Descrição estruturada
+- ✅ Tipos de mudança com checkboxes
+- ✅ Checklist completo de qualidade
+- ✅ Seção para screenshots
+- ✅ Links para documentação relevante
+
+#### Título do PR
+
+O título deve seguir o padrão **Conventional Commits**:
+
+```
+<tipo>: <descrição>
+
+Exemplos:
+feat: adiciona validação de email único
+fix: corrige erro ao criar conta duplicada
+docs: atualiza guia de contribuição
+refactor: simplifica lógica de autenticação
+test: adiciona testes para UserService
+```
+
+**Tipos válidos:**
+
+- `feat` - Nova funcionalidade
+- `fix` - Correção de bug
+- `docs` - Documentação
+- `style` - Formatação
+- `refactor` - Refatoração
+- `test` - Testes
+- `chore` - Manutenção
+- `perf` - Performance
+
+#### Validação Automática
+
+Quando você abre um PR, os seguintes checks são executados automaticamente:
+
+1. **Validação do título** - Verifica se segue Conventional Commits
+2. **Lint** - Executa ESLint
+3. **Formatação** - Verifica Prettier
+4. **Testes** - Executa todos os testes
+5. **Build** - Verifica se o build passa
+6. **Tamanho do PR** - Avisa se o PR está muito grande
+7. **Labels automáticos** - Adiciona labels baseado nos arquivos alterados
+8. **Comentário de boas-vindas** - Posta checklist e lembretes
+
+#### Arquivo de Template
+
 ```markdown
-## Descrição
+## 📝 Descrição
 
 Breve descrição das mudanças.
 
-## Tipo de Mudança
+## 🔄 Tipo de Mudança
 
-- [ ] Nova funcionalidade (feature)
-- [ ] Correção de bug (fix)
-- [ ] Melhoria (improvement)
-- [ ] Documentação (docs)
-- [ ] Refatoração (refactor)
+- [ ] 🚀 Nova funcionalidade (feature)
+- [ ] 🐛 Correção de bug (fix)
+- [ ] ⚡ Melhoria (improvement)
+- [ ] 📚 Documentação (docs)
+- [ ] ♻️ Refatoração (refactor)
 
-## Como Testar
+## ✅ Checklist
 
-1. Passo 1
-2. Passo 2
-3. Resultado esperado
+### Qualidade de Código
 
-## Checklist
+- [ ] Código segue os padrões do projeto
+- [ ] Sem uso de `any`
+- [ ] Funções pequenas (< 20 linhas)
 
-- [ ] Testes adicionados
-- [ ] Documentação atualizada
-- [ ] Linter passou
+### Testes
+
+- [ ] Testes unitários adicionados
 - [ ] Todos os testes passando
+- [ ] Cobertura >= 80%
 
-## Screenshots (se aplicável)
+### Documentação
 
-Adicionar screenshots ou GIFs.
+- [ ] Documentação atualizada
+- [ ] JSDoc adicionado
 
-## Observações Adicionais
+### Git
 
-Qualquer informação adicional relevante.
+- [ ] Commits seguem Conventional Commits
+- [ ] Branch atualizada com main
+
+...
 ```
+
+Ver template completo em: `.github/pull_request_template.md`
 
 ---
 
@@ -788,18 +869,22 @@ Qualquer informação adicional relevante.
 ### O que Revisar
 
 1. **Funcionalidade:**
+
    - Código funciona conforme esperado?
    - Tratamento de erros adequado?
 
 2. **Padrões:**
+
    - Segue as convenções do projeto?
    - Nomenclatura adequada?
 
 3. **Testes:**
+
    - Cobertura adequada?
    - Casos de erro testados?
 
 4. **Performance:**
+
    - Algoritmos eficientes?
    - Sem N+1 queries?
 
@@ -811,15 +896,19 @@ Qualquer informação adicional relevante.
 
 ```markdown
 # Comentário Positivo
+
 ✅ Ótima implementação da validação de CPF!
 
 # Sugestão de Melhoria
+
 💡 Sugestão: Poderia extrair essa lógica para um helper separado para melhor reutilização.
 
 # Problema Encontrado
+
 ❌ Problema: Este método pode causar N+1 query. Considere usar `include` no Prisma.
 
 # Pergunta
+
 ❓ Por que optou por essa abordagem ao invés de usar X?
 ```
 
@@ -899,4 +988,3 @@ Para dúvidas ou problemas, entre em contato com a equipe de desenvolvimento.
 ---
 
 **Obrigado por contribuir! 🎉**
-

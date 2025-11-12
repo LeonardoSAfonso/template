@@ -122,12 +122,12 @@ Este documento é atualizado regularmente. Última atualização: **Novembro 202
 
 Depois de ler esta documentação:
 
-1. ✅ Configure seu [ambiente](./CONFIGURATION.md)
-2. ✅ Entenda a [arquitetura](./ARCHITECTURE.md)
-3. ✅ Explore a [API](./API.md)
-4. ✅ Crie seu primeiro [módulo](./CONTRIBUTING.md#-como-criar-um-novo-módulo)
-5. ✅ Escreva [testes](./TESTING.md)
-6. ✅ Faça seu primeiro [PR](./CONTRIBUTING.md#-pull-requests)
+1. ✅ Configure seu [ambiente](./docs/CONFIGURATION.md)
+2. ✅ Entenda a [arquitetura](./docs/ARCHITECTURE.md)
+3. ✅ Explore a [API](./docs/API.md)
+4. ✅ Crie seu primeiro [módulo](./docs/CONTRIBUTING.md#-como-criar-um-novo-módulo)
+5. ✅ Escreva [testes](./docs/TESTING.md)
+6. ✅ Faça seu primeiro [PR](./docs/CONTRIBUTING.md#-pull-requests)
 
 ---
 

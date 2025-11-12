@@ -55,7 +55,8 @@ KC_ADMIN_PASSWORD=admin
 JWT_SECRET=your-super-secret-jwt-key
 ```
 
-⚠️ **Importante:** 
+⚠️ **Importante:**
+
 - Use uma chave forte e aleatória em produção
 - Nunca compartilhe ou commite esta chave
 - Exemplo de geração: `openssl rand -base64 32`
@@ -68,6 +69,7 @@ NODE_ENV=development
 ```
 
 **NODE_ENV** valores possíveis:
+
 - `development`: Ambiente de desenvolvimento
 - `production`: Ambiente de produção
 - `test`: Ambiente de testes
@@ -250,15 +252,18 @@ Se necessário importar manualmente:
 ### Criar Cliente Manualmente
 
 1. **Create Client:**
+
    - Client ID: `template-client`
    - Client Protocol: `openid-connect`
 
 2. **Settings:**
+
    - Access Type: `confidential`
    - Valid Redirect URIs: `http://localhost:3000/*`
    - Web Origins: `*`
 
 3. **Roles:**
+
    - Criar role `admin`
    - Criar role `user`
 
@@ -267,121 +272,19 @@ Se necessário importar manualmente:
 
 ---
 
-## 🧪 Configuração de Testes
-
-### jest.config.js
-
-```javascript
-module.exports = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: './',
-  testRegex: '.*\\.spec\\.ts$',
-  collectCoverageFrom: [
-    'src/**/*.(t|j)s',
-    '!src/**/*.spec.ts',
-    '!src/main.ts',
-    '!src/**/*.module.ts',
-    '!src/**/*.dto.ts',
-  ],
-  coverageDirectory: './coverage',
-  testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/src/$1',
-    '^prisma/client$': '<rootDir>/test/mocks/utils.ts',
-  },
-};
-```
-
-**Principais configurações:**
-
-- **testRegex**: Arquivos de teste com `.spec.ts`
-- **setupFilesAfterEnv**: Setup executado antes dos testes
-- **moduleNameMapper**: Resolve imports e mocks
-
-### Arquivo .env.test
-
-Para testes, crie um arquivo `.env.test`:
-
-```bash
-DATABASE_URL="postgresql://root:docker@localhost:5432/osiris_db_test?schema=public"
-NODE_ENV=test
-
-# Keycloak (pode usar mock ou instância de teste)
-KC_AUTH_SERVER_URL=http://localhost:8088/auth
-KC_REALM=template
-KC_CLIENT_ID=template-client
-KC_SECRET=test-secret
-KC_ADMIN_USER=admin
-KC_ADMIN_PASSWORD=admin
-
-JWT_SECRET=test-jwt-secret
-```
-
----
-
-## 📊 Configuração SonarQube
-
-### sonar-project.properties
-
-```properties
-sonar.projectKey=template
-sonar.projectName=Template NestJS
-sonar.projectVersion=0.0.1
-
-sonar.host.url=http://sonarqube:9000
-
-sonar.sources=src
-sonar.tests=test
-
-sonar.exclusions=\
-  **/node_modules/**,\
-  **/dist/**,\
-  **/coverage/**
-
-sonar.typescript.tsconfigPath=tsconfig.json
-sonar.typescript.lcov.reportPaths=coverage/lcov.info
-```
-
-### Primeira Execução
-
-1. **Subir SonarQube:**
-   ```bash
-   npm run sonar:up
-   ```
-
-2. **Aguardar inicialização** (pode levar alguns minutos)
-
-3. **Acessar:** http://localhost:9000
-   - Login: `admin` / `admin`
-   - Será solicitado trocar a senha
-
-4. **Gerar Token:**
-   - My Account → Security → Generate Token
-
-5. **Adicionar ao .env:**
-   ```bash
-   SONAR_TOKEN=seu_token_aqui
-   ```
-
-6. **Executar análise:**
-   ```bash
-   npm run sonar:analysis
-   ```
-
----
-
 ## 🔒 Segurança em Produção
 
 ### Variáveis de Ambiente
 
 ❌ **Não fazer:**
+
 - Commitar arquivo `.env` com credenciais reais
 - Usar senhas padrão em produção
 - Compartilhar secrets em texto plano
 - Usar `JWT_SECRET` simples
 
 ✅ **Fazer:**
+
 - Usar gerenciadores de secrets (AWS Secrets Manager, Azure Key Vault, etc.)
 - Gerar senhas fortes e aleatórias
 - Rotacionar secrets regularmente
@@ -473,6 +376,7 @@ PORT=3000
 **Causa:** PostgreSQL não está rodando ou não é acessível
 
 **Solução:**
+
 ```bash
 # Verificar se está rodando
 docker-compose ps postgres
@@ -489,6 +393,7 @@ docker-compose logs postgres
 **Causa:** Keycloak não está pronto ou realm não foi importado
 
 **Solução:**
+
 ```bash
 # Verificar status
 docker-compose ps keycloak
@@ -505,6 +410,7 @@ curl http://localhost:8088/auth/realms/template
 **Causa:** Client Secret incorreto no `.env`
 
 **Solução:**
+
 1. Acesse Keycloak Admin
 2. Vá em Clients → template-client → Credentials
 3. Copie o Secret correto
@@ -515,6 +421,7 @@ curl http://localhost:8088/auth/realms/template
 **Causa:** Cliente Prisma não foi gerado
 
 **Solução:**
+
 ```bash
 npx prisma generate
 ```
@@ -527,4 +434,3 @@ npx prisma generate
 - [Prisma Environment Variables](https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/nextjs-prisma-client-monorepo)
 - [Keycloak Server Administration](https://www.keycloak.org/docs/latest/server_admin/)
 - [Docker Environment Variables](https://docs.docker.com/compose/environment-variables/)
-
