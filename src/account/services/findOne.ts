@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class FindOneAccountService {
-  constructor(private repository: AccountRepository) {}
+  constructor(private readonly repository: AccountRepository) {}
 
   public async execute(id: string) {
     const account = await this.repository.findById(id);

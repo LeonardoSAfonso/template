@@ -6,7 +6,7 @@ import { UpdateAccountDTO } from '../domain/update.dto';
 
 @Injectable()
 export default class UpdateAccountService {
-  constructor(private repository: AccountRepository) {
+  constructor(private readonly repository: AccountRepository) {
     this.repository = repository;
   }
 

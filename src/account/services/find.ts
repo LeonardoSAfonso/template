@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class FindAccountsService {
-  constructor(private repository: AccountRepository) {}
+  constructor(private readonly repository: AccountRepository) {}
 
   public async execute(
     params: PaginationParams<Account>,

@@ -8,8 +8,8 @@ import { KeycloakUserService } from 'src/keycloak/keycloak-user.service';
 @Injectable()
 export default class DeleteAccountService {
   constructor(
-    private repository: AccountRepository,
-    private keycloakUserService: KeycloakUserService,
+    private readonly repository: AccountRepository,
+    private readonly keycloakUserService: KeycloakUserService,
   ) {}
 
   public async execute(id: string): Promise<Account> {

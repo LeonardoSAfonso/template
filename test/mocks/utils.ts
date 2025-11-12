@@ -163,28 +163,3 @@ export const mockPaginationParams = {
     | 'updatedAt',
   order: 'asc' as 'asc' | 'desc',
 };
-
-// Helper para limpar todos os mocks
-export const clearAllMocks = () => {
-  jest.clearAllMocks();
-
-  // Reset dos mocks específicos
-  Object.values(mockPrismaService.account).forEach((mock) => mock.mockReset());
-  Object.values(mockKeycloakAdminClient.users).forEach((mock) =>
-    mock.mockReset(),
-  );
-  mockConfigService.get.mockImplementation((key: string) => {
-    const config = {
-      KC_AUTH_SERVER_URL: 'http://localhost:8080/auth',
-      KC_REALM: 'template-name',
-      KC_CLIENT_ID: 'api',
-      KC_SECRET: 'test-secret',
-      KC_ADMIN: 'admin',
-      KC_ADMIN_PASSWORD: 'admin',
-      KC_REQUEST_TIMEOUT: 5000,
-      DATABASE_URL: 'postgresql://test:test@localhost:5432/test_db',
-      JWT_SECRET: 'test-jwt-secret',
-    };
-    return config[key];
-  });
-};

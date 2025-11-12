@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import FindOneAccountService from 'src/account/services/findOne';
 import AccountRepository from 'src/account/repository';
 import AppError from 'src/shared/AppError';
-import { mockAccountData, clearAllMocks } from 'test/mocks/utils';
+import { mockAccountData } from 'test/mocks/utils';
 
 describe('FindOneAccountService', () => {
   let service: FindOneAccountService;
@@ -25,8 +25,10 @@ describe('FindOneAccountService', () => {
 
     service = module.get<FindOneAccountService>(FindOneAccountService);
     accountRepository = module.get<AccountRepository>(AccountRepository);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {

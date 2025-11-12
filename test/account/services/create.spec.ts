@@ -7,7 +7,6 @@ import {
   mockAccountData,
   mockCreateAccountDTO,
   mockKeycloakUserService,
-  clearAllMocks,
 } from 'test/mocks/utils';
 
 describe('CreateAccountService', () => {
@@ -39,8 +38,10 @@ describe('CreateAccountService', () => {
     service = module.get<CreateAccountService>(CreateAccountService);
     accountRepository = module.get<AccountRepository>(AccountRepository);
     keycloakUserService = module.get<KeycloakUserService>(KeycloakUserService);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {

@@ -8,8 +8,8 @@ import { CreateAccountDTO } from '../domain/create.dto';
 @Injectable()
 export default class CreateAccountService {
   constructor(
-    private repository: AccountRepository,
-    private keycloakUserService: KeycloakUserService,
+    private readonly repository: AccountRepository,
+    private readonly keycloakUserService: KeycloakUserService,
   ) {}
 
   public async execute(accountData: CreateAccountDTO): Promise<Account> {

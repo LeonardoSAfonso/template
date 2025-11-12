@@ -3,11 +3,7 @@ import DeleteAccountService from 'src/account/services/delete';
 import AccountRepository from 'src/account/repository';
 import { KeycloakUserService } from 'src/keycloak/keycloak-user.service';
 import AppError from 'src/shared/AppError';
-import {
-  mockAccountData,
-  mockKeycloakUserService,
-  clearAllMocks,
-} from 'test/mocks/utils';
+import { mockAccountData, mockKeycloakUserService } from 'test/mocks/utils';
 
 describe('DeleteAccountService', () => {
   let service: DeleteAccountService;
@@ -37,8 +33,10 @@ describe('DeleteAccountService', () => {
     service = module.get<DeleteAccountService>(DeleteAccountService);
     accountRepository = module.get<AccountRepository>(AccountRepository);
     keycloakUserService = module.get<KeycloakUserService>(KeycloakUserService);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {

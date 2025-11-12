@@ -4,7 +4,6 @@ import { PrismaService } from 'src/orm/prisma.service';
 import { PaginationParams } from 'src/shared/types/pagination.type';
 import {
   mockPrismaService,
-  clearAllMocks,
   mockAccountData,
   mockCreateAccountDTO,
   mockPaginationParams,
@@ -28,8 +27,10 @@ describe('AccountRepository', () => {
 
     repository = module.get<AccountRepository>(AccountRepository);
     prismaService = module.get<PrismaService>(PrismaService);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('create', () => {

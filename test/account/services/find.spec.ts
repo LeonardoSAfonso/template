@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import FindAccountsService from 'src/account/services/find';
 import AccountRepository from 'src/account/repository';
-import {
-  mockAccountData,
-  mockPaginationParams,
-  clearAllMocks,
-} from 'test/mocks/utils';
+import { mockAccountData, mockPaginationParams } from 'test/mocks/utils';
 
 jest.mock('src/shared/utils/totalPage', () => ({
   default: jest.fn((elements: number, limit: number) => {
@@ -39,8 +35,10 @@ describe('FindAccountsService', () => {
 
     service = module.get<FindAccountsService>(FindAccountsService);
     accountRepository = module.get<AccountRepository>(AccountRepository);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {

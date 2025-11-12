@@ -2,22 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import UpdateAccountService from 'src/account/services/update';
 import AccountRepository from 'src/account/repository';
 import AppError from 'src/shared/AppError';
-import {
-  mockAccountData,
-  mockUpdateAccountDTO,
-  clearAllMocks,
-} from 'test/mocks/utils';
+import { mockAccountData, mockUpdateAccountDTO } from 'test/mocks/utils';
 
 describe('UpdateAccountService', () => {
   let service: UpdateAccountService;
   let accountRepository: AccountRepository;
-
-  const mockAccountRepository = {
-    findById: jest.fn(),
-    findByEmail: jest.fn(),
-    findByIdentification: jest.fn(),
-    update: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,15 +14,22 @@ describe('UpdateAccountService', () => {
         UpdateAccountService,
         {
           provide: AccountRepository,
-          useValue: mockAccountRepository,
+          useValue: {
+            findById: jest.fn(),
+            findByEmail: jest.fn(),
+            findByIdentification: jest.fn(),
+            update: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     service = module.get<UpdateAccountService>(UpdateAccountService);
     accountRepository = module.get<AccountRepository>(AccountRepository);
+  });
 
-    clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('execute', () => {
