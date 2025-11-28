@@ -1,0 +1,48 @@
+# Dependências
+node_modules
+npm-debug.log*
+
+# Arquivos de desenvolvimento
+.env
+.env.*
+
+# Arquivos de build
+dist
+coverage
+
+# Arquivos Git
+.git
+.gitignore
+
+# Arquivos IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Dados locais
+data/
+
+# Arquivos temporários
+.tmp
+.temp
+tmp/
+temp/
+
+# Arquivos de teste
+test/
+*.test.ts
+*.spec.ts
+
+# Documentação
+README.md
+docs/
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore 

@@ -1,0 +1,132 @@
+services:
+  api:
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
+    networks:
+      leonet:
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: osiris_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: docker
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      leonet:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:19.0.1
+    command:
+      - start-dev
+      - --import-realm
+      - --http-relative-path
+      - /auth
+    restart: unless-stopped
+    init: true
+    healthcheck:
+      test: curl -f http://localhost:8080/auth/realms/template || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./docker/template-realm.json:/opt/keycloak/data/import/realm.json:ro
+    ports:
+      - '8088:8080'
+    networks:
+      leonet:
+
+  migrate:
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    command: sh -c "npx prisma migrate deploy"
+    depends_on:
+      postgres:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
+    networks:
+      - leonet
+
+  sonarqube-db:
+    image: postgres:15
+    container_name: sonarqube-db
+    environment:
+      POSTGRES_DB: sonar
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - sonarqube-db-data:/var/lib/postgresql/data
+    networks:
+      leonet:
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - sonarqube-db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    ports:
+      - '9000:9000'
+    networks:
+      leonet:
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    container_name: sonar-scanner
+    depends_on:
+      - sonarqube
+    environment:
+      SONAR_HOST_URL: ${SONAR_HOST_URL:-http://sonarqube:9000}
+      SONAR_TOKEN: ${SONAR_TOKEN:-}
+    volumes:
+      - .:/usr/src
+    networks:
+      leonet:
+    profiles:
+      - tools
+
+networks:
+  leonet:
+    driver: bridge
+    name: leonet
+
+volumes:
+  sonarqube-db-data:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:
